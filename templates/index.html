@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cardio Health Predictor</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1e40af;
+            --secondary: #64748b;
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --border: #e2e8f0;
+            --text-main: #0f172a;
+            --text-sub: #475569;
+            --success: #10b981;
+            --danger: #ef4444;
+            --radius: 12px;
+            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f0f4ff 0%, #e0f2fe 100%);
+            color: var(--text-main);
+            line-height: 1.5;
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+
+        .main-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--surface);
+            border-radius: 20px;
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        .header {
+            background-color: var(--surface);
+            padding: 40px;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--text-main);
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .header p {
+            color: var(--secondary);
+            font-size: 16px;
+        }
+
+        form {
+            padding: 40px;
+        }
+
+        .section-title {
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--primary);
+            margin-bottom: 24px;
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-main);
+        }
+
+        .sub-label {
+            font-size: 12px;
+            color: var(--secondary);
+            font-weight: 400;
+            margin-left: 4px;
+        }
+
+        input[type="number"] {
+            padding: 12px 16px;
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.2s;
+            outline: none;
+            width: 100%;
+        }
+
+        input[type="number"]:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+        }
+
+        input[readonly] {
+            background-color: #f1f5f9;
+            cursor: not-allowed;
+            border-color: transparent;
+        }
+
+        /* Radio Cards Style */
+        .radio-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        .radio-grid.two-cols {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .radio-card {
+            position: relative;
+        }
+
+        .radio-card input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+            height: 0;
+            width: 0;
+        }
+
+        .radio-card-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 12px;
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: all 0.2s;
+            height: 100%;
+            text-align: center;
+        }
+
+        .radio-card-content span {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .radio-card input:checked+.radio-card-content {
+            border-color: var(--primary);
+            background-color: #eff6ff;
+            color: var(--primary-dark);
+        }
+
+        .radio-card:hover .radio-card-content {
+            border-color: #cbd5e1;
+        }
+
+        .radio-card input:checked+.radio-card-content span {
+            font-weight: 700;
+        }
+
+        .submit-btn {
+            width: 100%;
+            background-color: var(--primary);
+            color: white;
+            padding: 18px;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            margin-top: 20px;
+        }
+
+        .submit-btn:hover {
+            background-color: var(--primary-dark);
+        }
+
+        /* Result Section */
+        .result-container {
+            background: #f8fafc;
+            border-top: 1px solid var(--border);
+            padding: 30px;
+            text-align: center;
+            animation: slideIn 0.4s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .result-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .result-badge.safe {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+
+        .result-badge.danger {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+
+        .result-tip {
+            color: var(--text-sub);
+            font-size: 15px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 640px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .radio-grid,
+            .radio-grid.two-cols {
+                grid-template-columns: 1fr;
+            }
+
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .main-container {
+                border-radius: 0;
+                box-shadow: none;
+            }
+
+            body {
+                padding: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="main-container">
+
+        <div class="header">
+            <h1>Cardio Health Assessment</h1>
+            <p>Reliable AI-powered cardiovascular risk prediction</p>
+        </div>
+
+        <form action="/predict" method="post">
+
+            <div class="section-title">Physical Profile</div>
+
+            <div class="form-grid">
+                <div class="input-group">
+                    <label>Age <span class="sub-label">(years)</span></label>
+                    <input type="number" name="age" required min="10" max="100" placeholder="e.g 45"
+                        value="{{ form_data.age if form_data else '' }}">
+                </div>
+
+                <div class="input-group">
+                    <label>Height <span class="sub-label">(cm)</span></label>
+                    <input type="number" name="height" id="height" required min="100" max="250" placeholder="e.g 175"
+                        value="{{ form_data.height if form_data else '' }}">
+                </div>
+
+                <div class="input-group">
+                    <label>Weight <span class="sub-label">(kg)</span></label>
+                    <input type="number" name="weight" id="weight" required min="30" max="200" placeholder="e.g 75"
+                        value="{{ form_data.weight if form_data else '' }}">
+                </div>
+
+                <div class="input-group">
+                    <label>BMI <span class="sub-label">Body Mass Index</span></label>
+                    <input type="number" name="bmi" id="bmi" readonly placeholder="..."
+                        value="{{ form_data.bmi if form_data else '' }}">
+                </div>
+            </div>
+
+            <div class="section-title">Medical Metrics</div>
+
+            <div class="form-grid">
+                <div class="input-group">
+                    <label>Systolic BP <span class="sub-label">(Top number)</span></label>
+                    <input type="number" name="ap_hi" required min="70" max="240" placeholder="e.g 120"
+                        value="{{ form_data.ap_hi if form_data else '' }}">
+                </div>
+
+                <div class="input-group">
+                    <label>Diastolic BP <span class="sub-label">(Bottom number)</span></label>
+                    <input type="number" name="ap_lo" required min="40" max="160" placeholder="e.g 80"
+                        value="{{ form_data.ap_lo if form_data else '' }}">
+                </div>
+            </div>
+
+            <div class="input-group" style="margin-bottom: 24px;">
+                <label>Cholesterol Level</label>
+                <div class="radio-grid">
+                    <label class="radio-card">
+                        <input type="radio" name="cholesterol" value="1" required {% if not form_data or
+                            form_data.cholesterol=='1' %}checked{% endif %}>
+                        <div class="radio-card-content">
+                            <span>Normal</span>
+                        </div>
+                    </label>
+                    <label class="radio-card">
+                        <input type="radio" name="cholesterol" value="2" {% if form_data and form_data.cholesterol=='2'
+                            %}checked{% endif %}>
+                        <div class="radio-card-content">
+                            <span>Above Normal</span>
+                        </div>
+                    </label>
+                    <label class="radio-card">
+                        <input type="radio" name="cholesterol" value="3" {% if form_data and form_data.cholesterol=='3'
+                            %}checked{% endif %}>
+                        <div class="radio-card-content">
+                            <span>High</span>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <div class="input-group" style="margin-bottom: 24px;">
+                <label>Glucose Level</label>
+                <div class="radio-grid">
+                    <label class="radio-card">
+                        <input type="radio" name="gluc" value="1" required {% if not form_data or form_data.gluc=='1'
+                            %}checked{% endif %}>
+                        <div class="radio-card-content">
+                            <span>Normal</span>
+                        </div>
+                    </label>
+                    <label class="radio-card">
+                        <input type="radio" name="gluc" value="2" {% if form_data and form_data.gluc=='2' %}checked{%
+                            endif %}>
+                        <div class="radio-card-content">
+                            <span>Above Normal</span>
+                        </div>
+                    </label>
+                    <label class="radio-card">
+                        <input type="radio" name="gluc" value="3" {% if form_data and form_data.gluc=='3' %}checked{%
+                            endif %}>
+                        <div class="radio-card-content">
+                            <span>High</span>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <div class="section-title">Lifestyle Habits</div>
+
+            <div class="form-grid">
+                <div class="input-group">
+                    <label>Do you smoke?</label>
+                    <div class="radio-grid two-cols">
+                        <label class="radio-card">
+                            <input type="radio" name="smoke" value="0" required {% if not form_data or
+                                form_data.smoke=='0' %}checked{% endif %}>
+                            <div class="radio-card-content">
+                                <span>No</span>
+                            </div>
+                        </label>
+                        <label class="radio-card">
+                            <input type="radio" name="smoke" value="1" {% if form_data and form_data.smoke=='1'
+                                %}checked{% endif %}>
+                            <div class="radio-card-content">
+                                <span>Yes</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>Alcohol intake?</label>
+                    <div class="radio-grid two-cols">
+                        <label class="radio-card">
+                            <input type="radio" name="alco" value="0" required {% if not form_data or
+                                form_data.alco=='0' %}checked{% endif %}>
+                            <div class="radio-card-content">
+                                <span>No</span>
+                            </div>
+                        </label>
+                        <label class="radio-card">
+                            <input type="radio" name="alco" value="1" {% if form_data and form_data.alco=='1'
+                                %}checked{% endif %}>
+                            <div class="radio-card-content">
+                                <span>Yes</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>Physically active?</label>
+                    <div class="radio-grid two-cols">
+                        <label class="radio-card">
+                            <input type="radio" name="active" value="1" required {% if not form_data or
+                                form_data.active=='1' %}checked{% endif %}>
+                            <div class="radio-card-content">
+                                <span>Yes</span>
+                            </div>
+                        </label>
+                        <label class="radio-card">
+                            <input type="radio" name="active" value="0" {% if form_data and form_data.active=='0'
+                                %}checked{% endif %}>
+                            <div class="radio-card-content">
+                                <span>No</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="submit-btn">Run Analysis</button>
+        </form>
+
+        {% if prediction %}
+        <div class="result-container">
+            {% if 'No' in prediction %}
+            <div class="result-badge safe">
+                <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                Result: {{ prediction }}
+            </div>
+            <p class="result-tip">Your indicators suggest a lower probability of cardiovascular disease. Maintain a
+                healthy lifestyle!</p>
+            {% else %}
+            <div class="result-badge danger">
+                <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+                Result: {{ prediction }}
+            </div>
+            <p class="result-tip"><b>Attention advised.</b> Please consult with a healthcare professional for a
+                comprehensive check-up.</p>
+            {% endif %}
+        </div>
+        {% endif %}
+
+    </div>
+
+    <script>
+        const heightIn = document.getElementById('height');
+        const weightIn = document.getElementById('weight');
+        const bmiOut = document.getElementById('bmi');
+
+        function updateBMI() {
+            const h = parseFloat(heightIn.value);
+            const w = parseFloat(weightIn.value);
+            if (h && w) {
+                const bmi = w / ((h / 100) * (h / 100));
+                bmiOut.value = bmi.toFixed(1);
+            }
+        }
+
+        heightIn.addEventListener('input', updateBMI);
+        weightIn.addEventListener('input', updateBMI);
+    </script>
+</body>
+
+</html>
