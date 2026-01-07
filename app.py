@@ -28,7 +28,7 @@ def predict():
     prediction = model.predict([data])[0]
     result = "Disease Detected" if prediction == 1 else "No Disease"
 
-    return render_template("index.html", prediction=result)
+    return render_template("index.html", prediction=result, form_data=request.form)
 
 if __name__ == "__main__":
     app.run()
